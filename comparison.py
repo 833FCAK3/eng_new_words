@@ -14,23 +14,26 @@ words_i_know = []
 w = openpyxl.load_workbook(xlsx_file).active
 for row in w:
     for cell in row:
-        words_i_know.append(cell.value)
+        if cell.value:
+            words_i_know.append(cell.value)
 
 # Read contents of the sub file.
 with open(subs) as s:
     content = s.readlines()
-    content = content[:200]
 
 # Fill the list of known words, removing non-letter characters and non-english words.
 words_in_subs = []
 for line in content:
     for word in line.split(' '):
-        if d.check(word):
-            for i, letter in enumerate(word):
-                if letter not in string.ascii_letters and letter != "'":
-                    word = word.replace(letter, '')
-        if d.check(word):
-            words_in_subs.append(word.lower())
+        try:
+            if d.check(word):
+                for i, letter in enumerate(word):
+                    if letter not in string.ascii_letters and letter != "'":
+                        word = word.replace(letter, '')
+            if d.check(word):
+                words_in_subs.append(word.lower())
+        except:
+            continue
 
 
 # Copy of the words in subs for later print out.
