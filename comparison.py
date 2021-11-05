@@ -1,6 +1,14 @@
 import openpyxl
 import enchant
 import string
+import argparse
+
+
+arg_parser = argparse.ArgumentParser(
+    description="Right unknown words to .xlsx file.")
+# arg_parser.add_argument('--help', type=str, required=False)
+# arg_parser.add_help()
+
 
 # Define input / output files, list of obvious words and class verifying words
 d = enchant.Dict("en")
@@ -8,6 +16,7 @@ xlsx_file = 'words.xlsx'  # Known words
 subs = "sub.srt"
 output_file = 'new_words.xlsx'
 exlude_list = ['a', 'an', 'the']  # List of obvious words, for manual appending
+
 
 # Fill the list of words we know.
 words_i_know = []
@@ -25,15 +34,11 @@ with open(subs) as s:
 words_in_subs = []
 for line in content:
     for word in line.split(' '):
-        try:
-            if d.check(word):
-                for i, letter in enumerate(word):
-                    if letter not in string.ascii_letters and letter != "'":
-                        word = word.replace(letter, '')
-            if d.check(word):
-                words_in_subs.append(word.lower())
-        except:
-            continue
+        for i, letter in enumerate(word):
+            if letter not in string.ascii_letters and letter != "'":
+                word = word.replace(letter, '')
+        if word != '':
+            words_in_subs.append(word.lower())
 
 
 # Copy of the words in subs for later print out.
@@ -59,3 +64,4 @@ wb.save('new_words.xlsx')
 print("Known words: " + str(words_i_know), end="\n\n")
 print("Words in subs: " + str(all_words_in_subs), end="\n\n")
 print("Words in subs minus known words: " + str(words_in_subs), end="\n\n")
+
